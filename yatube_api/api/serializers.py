@@ -22,8 +22,11 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault())
+    post = serializers.PrimaryKeyRelatedField(
+        read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -32,8 +35,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
-        read_only=True,
         slug_field='username',
+        queryset=User.objects.all(),
         default=serializers.CurrentUserDefault()
     )
     following = serializers.SlugRelatedField(
@@ -49,7 +52,7 @@ class FollowSerializer(serializers.ModelSerializer):
                 queryset=Follow.objects.all(),
                 fields=('user', 'following',),
                 message='Вы уже подписаны на данного автора.'
-            )
+            ),
         )
 
     def validate(self, data):
