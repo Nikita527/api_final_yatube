@@ -40,7 +40,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
     def get_queryset(self):
-        return self.get_post().comments
+        return self.get_post().comments.select_related('author')
 
 
 class FollowViewSet(mixins.CreateModelMixin,
